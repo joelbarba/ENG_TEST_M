@@ -75,14 +75,16 @@ public class MainActivity extends AppCompatActivity {
         carregarParaula();
 
 
-        // Boto modificar últim moviment
-        final Button button_next = (Button) findViewById(R.id.button_next);
+
+        // final Button button_next = (Button) findViewById(R.id.button_next);
+        TextView button_next = (TextView) findViewById (R.id.label_word);
         button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 carregarParaula();
             }
         });
+
 
     }
 
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (position == word_ask.correct_pos_answer) {
                     p.setBackgroundColor(ContextCompat.getColor(context, R.color.colorOK));
-                    mostrar_avis("OK, correcte");
+                    // mostrar_avis("OK, correcte");
 
                     mHandler.postDelayed(new Runnable() {
                         public void run() {

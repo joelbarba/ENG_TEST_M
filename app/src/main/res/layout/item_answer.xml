@@ -16,7 +16,8 @@
         android:layout_margin="2px"
         android:textIsSelectable="false"
         android:textSize="20dp"
-        android:textColor="#171717" />
+        android:textColor="#171717"
+        android:padding="5px" />
 
 
 </LinearLayout>
