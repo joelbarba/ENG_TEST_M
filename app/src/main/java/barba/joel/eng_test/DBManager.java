@@ -54,8 +54,9 @@ public class DBManager {
                 "       substr(translation, 1, instr(translation || ',', ',') - 1) as first_trans, " +
                 "       id_word, " +
                 "       (select abs(random() % 9)) select_pos " +
-                "  from (select abs(random() % 100000) as rand_index, t1.* from ALL_WORDS t1) " +
-                " order by rand_index limit 9 "
+                "  from (select abs(random() % 100000) as rand_index, t1.* from ALL_WORDS t1 where id_list = 2 " +
+                "           and kind = (select case (abs(random() % 3)) when 0 then 'noun' when 1 then 'verb' when 2 then 'adjective' end)) " +
+                " order by ifnull(sco, 0), rand_index limit 9 "
                 , null);
 
 
@@ -82,4 +83,14 @@ public class DBManager {
     }
 
 
+    // Guarda la resposta a la paraula actual
+    public void set_word_answ(C_Word_Ask curr_word, boolean answ_ok) {
+
+        db.execSQL("update all_WORDS set attempt = ifnull(attempt,0) + 1  where id_list = 2 and id_word = " + String.valueOf(curr_word.id_word));
+        if (answ_ok) {
+            db.execSQL("update all_WORDS set ok = ifnull(ok,0) + 1  where id_list = 2 and id_word = " + String.valueOf(curr_word.id_word));
+        }
+        db.execSQL("update all_WORDS set sco = ifnull(attempt,0) + ifnull(ok,0)  where id_list = 2 and id_word = " + String.valueOf(curr_word.id_word));
+
+    }
 }
