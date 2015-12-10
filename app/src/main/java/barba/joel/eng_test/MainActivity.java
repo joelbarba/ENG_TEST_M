@@ -2,11 +2,15 @@ package barba.joel.eng_test;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,6 +20,13 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
 public class MainActivity extends AppCompatActivity {
 
     private DBManager DB_ET = null;
@@ -24,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler = new Handler();
 
     private C_Word_Ask word_ask;
-
+    private boolean curr_answ = true;
 
 
 
@@ -65,6 +76,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Configurar menu superior
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+
+                    // Pantalla de configuració
+                    case R.id.action_settings:
+                        try { backup_db_file(); } catch(Exception e) {}
+                        break;
+                    case R.id.mov_list_show:
+                        saltar_llista_movs();
+                        break;      // Pantalla llista de moviments
+                }
+                return true;
+            }
+        });
+
+
 
         // Iniciar DB
         DB_ET = new DBManager(getApplicationContext()); // Crear l'interface amb la DB
@@ -91,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
     private void carregarParaula() {
 
         word_ask = DB_ET.get_word();
+        curr_answ = true;
 
         TextView label_word = (TextView) findViewById (R.id.label_word);
         // label_word.setText(String.valueOf(word_ask.correct_pos_answer) + ", " + word_ask.word);
@@ -118,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView p = (TextView) view.findViewById(R.id.paraula_resposta);
 
                 if (position == word_ask.correct_pos_answer) {
+                    if (curr_answ) DB_ET.set_word_answ(word_ask, true);
                     p.setBackgroundColor(ContextCompat.getColor(context, R.color.colorOK));
                     // mostrar_avis("OK, correcte");
 
@@ -129,10 +164,44 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     p.setBackgroundColor(ContextCompat.getColor(context, R.color.colorKO));
+                    if (curr_answ) DB_ET.set_word_answ(word_ask, false);
+                    curr_answ = false;
                 }
 
             }
         });
+
+    }
+
+
+    private void backup_db_file() {
+        File f = new File("/data/data/barba.joel.eng_test/databases/DB_ENG_TEST");
+        FileInputStream  fis = null;
+        FileOutputStream fos = null;
+
+        try {
+
+            fis = new FileInputStream(f);
+            fos = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "db_dump_ENG_TEST.db");
+
+            while (true) {
+                int i = fis.read();
+                if (i!=-1) { fos.write(i); }
+                else { break; }
+            }
+            fos.flush();
+            mostrar_avis("DB dump OK");
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            mostrar_avis("DB dump ERROR");
+
+        } finally {
+            try {
+                fos.close();
+                fis.close();
+            } catch(IOException ioe) {}
+        }
 
     }
 
