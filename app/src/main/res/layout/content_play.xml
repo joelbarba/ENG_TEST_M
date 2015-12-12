@@ -12,6 +12,58 @@
     tools:context="barba.joel.eng_test.PlayActivity"
     tools:showIn="@layout/activity_play">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Slender"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/label_word"
+        android:textSize="60dp"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="N"
+        android:id="@+id/text_kind"
+        android:layout_below="@+id/label_word"
+        android:layout_centerHorizontal="true"
+        android:textColor="#70ce79" />
+
+    <GridView android:id="@+id/taula1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:numColumns="3"
+        android:columnWidth="80px"
+        android:horizontalSpacing="5px"
+        android:verticalSpacing="10px"
+        android:stretchMode="columnWidth"
+        android:layout_below="@+id/text_kind"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/button_mark" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MARK"
+        android:id="@+id/button_mark"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="40dp"
+        android:visibility="invisible" />
 
 </RelativeLayout>

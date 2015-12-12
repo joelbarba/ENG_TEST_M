@@ -43,21 +43,34 @@ public class DBManager {
     // 1 => kind
     // 2 => translation ok
     // 3-11 => options to choose
-    public C_Word_Ask get_word() {
+    public C_Word_Ask get_word(String id_llista) {
 
         C_Word_Ask word_ask = new C_Word_Ask();
 
 
         Cursor F_cursor = db.rawQuery(
+                  "select word, kind, "
+                + "       substr(translation, 1, instr(translation || ',', ',') - 1) as first_trans, "
+                + "       id_word, "
+                + "       (select abs(random() % 9)) select_pos "
+                + "  from ALL_WORDS t1 "
+                + " where id_list = " + id_llista
+                + "   and kind = (select kind from all_words where id_list = " + id_llista + " and lok is null order by random() limit 1)"
+                + "   and lok is null"
+                + " order by ifnull(sco, 0), random()"
+                + " limit 9", null);
+/*
+
                 "select word, " +
                 "       kind, " +
                 "       substr(translation, 1, instr(translation || ',', ',') - 1) as first_trans, " +
                 "       id_word, " +
                 "       (select abs(random() % 9)) select_pos " +
-                "  from (select abs(random() % 100000) as rand_index, t1.* from ALL_WORDS t1 where id_list = 2 " +
-                "           and kind = (select case (abs(random() % 3)) when 0 then 'noun' when 1 then 'verb' when 2 then 'adjective' end)) " +
+                "  from (select abs(random() % 100000) as rand_index, t1.* from ALL_WORDS t1 where id_list = " + id_llista +
+                "           and kind = (select case (abs(random() % 3)) when 0 then 'noun' when 1 then 'verb' when 2 then 'adjective' end)" +
+                "           and lok is null) " +
                 " order by ifnull(sco, 0), rand_index limit 9 "
-                , null);
+                , null);*/
 
 
         if (F_cursor.moveToFirst()) {
@@ -84,13 +97,19 @@ public class DBManager {
 
 
     // Guarda la resposta a la paraula actual
-    public void set_word_answ(C_Word_Ask curr_word, boolean answ_ok) {
+    public void set_word_answ(C_Word_Ask curr_word, boolean answ_ok, String id_llista) {
 
-        db.execSQL("update all_WORDS set attempt = ifnull(attempt,0) + 1  where id_list = 2 and id_word = " + String.valueOf(curr_word.id_word));
+        db.execSQL("update all_WORDS set attempt = ifnull(attempt,0) + 1  where id_list = " + id_llista + " and id_word = " + String.valueOf(curr_word.id_word));
         if (answ_ok) {
-            db.execSQL("update all_WORDS set ok = ifnull(ok,0) + 1  where id_list = 2 and id_word = " + String.valueOf(curr_word.id_word));
+            db.execSQL("update all_WORDS set ok = ifnull(ok,0) + 1  where id_list = " + id_llista + " and id_word = " + String.valueOf(curr_word.id_word));
         }
-        db.execSQL("update all_WORDS set sco = ifnull(attempt,0) + ifnull(ok,0)  where id_list = 2 and id_word = " + String.valueOf(curr_word.id_word));
+        db.execSQL("update all_WORDS set sco = ifnull(attempt,0) + ifnull(ok,0)  where id_list = " + id_llista + " and id_word = " + String.valueOf(curr_word.id_word));
 
     }
+
+    // Marca la paraula a la llista
+    public void set_word_mark(C_Word_Ask curr_word, String id_llista) {
+        db.execSQL("update all_WORDS set lok = 1  where id_list = " + id_llista + " and id_word = " + String.valueOf(curr_word.id_word));
+    }
+
 }

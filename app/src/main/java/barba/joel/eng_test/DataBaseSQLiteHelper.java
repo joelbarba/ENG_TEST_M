@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "DB_ENG_TEST";
-    private static final int DATABASE_VERSION = 23;
+    private static final int DATABASE_VERSION = 28;
     private C_Load_Data Carregador = new C_Load_Data();
 
 
@@ -49,5 +49,6 @@ public class DataBaseSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("delete from all_words");
         Carregador.load_db1(db);
         Carregador.load_db2(db);
+        Carregador.load_db3(db);
     }
 }
