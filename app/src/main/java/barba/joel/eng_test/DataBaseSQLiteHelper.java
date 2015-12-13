@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "DB_ENG_TEST";
-    private static final int DATABASE_VERSION = 28;
+    private static final int DATABASE_VERSION = 29;
     private C_Load_Data Carregador = new C_Load_Data();
 
 
